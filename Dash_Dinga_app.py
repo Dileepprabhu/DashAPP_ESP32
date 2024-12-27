@@ -42,6 +42,8 @@ async def websocket_handler():
             live_data_queue.put(message)
             if live_data_queue.qsize() > 100:  # Limit the number of messages to 100
                 live_data_queue.get()
+                print(f"Received message: {message}")
+
 
 # Function to send message to WebSocket
 async def send_message(message):
@@ -60,9 +62,12 @@ threading.Thread(target=start_websocket_thread, daemon=True).start()
 @app.callback(Output('live-data', 'children'), [Input('interval-component', 'n_intervals')])
 def update_live_data(n_intervals):
     live_data = []
+    print(f"Interval triggered: {n_intervals}")
+    print(f"Queue size: {live_data_queue.qsize()}")
+
     while not live_data_queue.empty():
         live_data.append(live_data_queue.get())
-
+    print(f"Updating live-data with: {live_data}")
     return [html.Div(msg) for msg in live_data]
 
 # Callback to handle button interactions
