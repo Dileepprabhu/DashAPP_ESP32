@@ -53,25 +53,32 @@ live_data_history = []
 # Layout of the app
 app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(html.H1("Live Data from WebSocket"), className="mb-2")
+        dbc.Col(html.H1("Dinga -ESP32 : Websocket Dashboard"), className="mb-2")
     ]),
     dbc.Row([
-        dbc.Col(html.Div(id='live-data', style={'height': '300px', 'overflowY': 'scroll', 'border': '1px solid #ccc'}), className="mb-2")
+        dbc.Col(html.Div("Input the IP address:"), width=2),
+        dbc.Col(dcc.Input(id='ip-address', type='text', placeholder='Enter IP address', value='192.168.4.1'), width=4),
+        dbc.Col(dbc.Button("Connect", id='connect-button', color="primary"), width=2),
+        dbc.Col(html.Div(id='connection-status', children=connection_status), width=4)
+    ],className="mb-2"),
+    dbc.Row([
+        dbc.Col(dbc.Button("Get Task Counter", id='get-task-counter', color="secondary"), className="mb-2"),
+        dbc.Col(dbc.Button("Stop Task Counter", id='stop-task-counter', color="secondary"), className="mb-2")
     ]),
     dbc.Row([
-        dbc.Col(dbc.Button("Get Task Counter", id='get-task-counter', color="primary"), className="mb-2"),
-        dbc.Col(dbc.Button("Stop Task Counter", id='stop-task-counter', color="danger"), className="mb-2")
+        dbc.Col(html.Hr(), className="mb-2")
     ]),
     dbc.Row([
         dbc.Col(dbc.Button("Start Motor Test", id='start-motor-test', color="success"), className="mb-2")
+    ]),    
+    dbc.Row([
+        dbc.Col(html.Hr(), className="mb-2")
     ]),
     dbc.Row([
         dbc.Col(dcc.Interval(id='interval-component', interval=500, n_intervals=0), className="mb-2")  # Update every 500ms
     ]),
     dbc.Row([
-        dbc.Col(dcc.Input(id='ip-address', type='text', placeholder='Enter IP address', value='192.168.4.1'), width=6),
-        dbc.Col(dbc.Button("Connect", id='connect-button', color="primary"), width=2),
-        dbc.Col(html.Div(id='connection-status', children=connection_status), width=4)
+        dbc.Col(html.Div(id='live-data', style={'height': '300px', 'overflowY': 'scroll', 'border': '1px solid #ccc'}), className="mb-2")
     ])
 ])
 
