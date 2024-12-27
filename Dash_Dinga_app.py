@@ -58,17 +58,30 @@ def start_websocket_thread():
 
 threading.Thread(target=start_websocket_thread, daemon=True).start()
 
+# Persistent list to store all messages (history)
+live_data_history = []
+
 # Callback to update live data
 @app.callback(Output('live-data', 'children'), [Input('interval-component', 'n_intervals')])
 def update_live_data(n_intervals):
-    live_data = []
-    print(f"Interval triggered: {n_intervals}")
-    print(f"Queue size: {live_data_queue.qsize()}")
+    global live_data_history
 
+    # Collect new messages from the queue
+    new_messages = []
     while not live_data_queue.empty():
-        live_data.append(live_data_queue.get())
-    print(f"Updating live-data with: {live_data}")
-    return [html.Div(msg) for msg in live_data]
+        new_messages.append(live_data_queue.get())
+
+    # Add new messages to the top of the history
+    live_data_history = new_messages + live_data_history
+
+    # Optionally, limit the history size (e.g., keep only the latest 100 messages)
+    max_history_size = 100
+    if len(live_data_history) > max_history_size:
+        live_data_history = live_data_history[:max_history_size]
+
+    # Return the updated log with the latest message on top
+    return [html.Div(msg) for msg in live_data_history]
+
 
 # Callback to handle button interactions
 @app.callback([Output('interval-component', 'disabled')], 
